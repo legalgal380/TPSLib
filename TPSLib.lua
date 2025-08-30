@@ -94,14 +94,14 @@ function TPSLib:Window(config)
         AnchorPoint = Vector2.new(0.5, 0.5),
         Size = UDim2.fromOffset(math.floor(TARGET_W*0.5), TOPBAR_H),
         Position = UDim2.new(0.5, 0, 1.1, 0),
-        BackgroundColor3 = theme.Background,
+        BackgroundColor3 = Theme.Background,
         BorderSizePixel = 0,
         ClipsDescendants = true
     }, gui)
     new("UICorner", {CornerRadius = UDim.new(0, 14)}, window)
     new("UIStroke", {
         ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-        Color = theme.Accent,
+        Color = Theme.Accent,
         Transparency = 0.25,
         Thickness = 1
     }, window)
@@ -124,7 +124,7 @@ function TPSLib:Window(config)
         Font = Enum.Font.GothamSemibold,
         TextSize = 16,
         TextXAlignment = Enum.TextXAlignment.Left,
-        TextColor3 = theme.Text,
+        TextColor3 = Theme.Text,
         ZIndex = 3
     }, topBar)
 
@@ -274,4 +274,5 @@ function TPSLib:Window(config)
 end
 
 return TPSLib
+
 
