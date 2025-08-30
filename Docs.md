@@ -19,7 +19,7 @@ Para você usar agora a janela no pacote você irá utilizar a função de criar
 local win = TPSLib:Window({
     Name = "Preview da Lib",
     TopbarTheme = "azul", 
-    WindowTheme = "Neon"
+    Theme = "Neon"
 })
 ```
 Assim você agora irá poder usar elementos na janela
