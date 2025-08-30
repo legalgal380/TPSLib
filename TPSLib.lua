@@ -75,9 +75,9 @@ local Themes = {
 }
 
 function TPSLib:Window(config)
-    local name = config.Name or "TPS Window"
-    local topbarTheme = colors[config.TopbarTheme] or colors.azul
-    local theme = Themes[config.WindowTheme] or Themes.Dark
+    local Name = config.Name or "TPS Window"
+    local TopbarTheme = colors[config.TopbarTheme] or colors.azul
+    local Theme = Themes[config.WindowTheme] or Themes.Dark
 
     local TARGET_W, TARGET_H = 520, 300
     local TOPBAR_H = 44
@@ -274,3 +274,4 @@ function TPSLib:Window(config)
 end
 
 return TPSLib
+
