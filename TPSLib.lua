@@ -175,7 +175,7 @@ function TPSLib:Window(config)
         if minimized then
             mainContent.Visible = false
             tween(window, {Size = UDim2.fromOffset(TARGET_W, TOPBAR_H)}, TweenInfo.new(0.28, Enum.EasingStyle.Quad, Enum.EasingDirection.Out))
-            tween(topBar, {BackgroundColor3 = Color3.fromRGB(0, 90, 255)}, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out))
+            tween(topBar, {BackgroundColor3 = topbarTheme}, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out))
             minBtn.Text = "+"
         else
             tween(window, {Size = UDim2.fromOffset(TARGET_W, TARGET_H)}, TweenInfo.new(0.32, Enum.EasingStyle.Back, Enum.EasingDirection.Out))
@@ -224,5 +224,6 @@ function TPSLib:Window(config)
 
     return WindowObj
 end
+
 
 return TPSLib
