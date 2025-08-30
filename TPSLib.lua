@@ -16,7 +16,11 @@ local function new(class, props, parent)
 end
 
 local function tween(o, props, info)
-    local t = TweenService:Create(o, info or TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), props)
+    local t = TweenService:Create(
+        o,
+        info or TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        props
+    )
     t:Play()
     return t
 end
@@ -27,12 +31,53 @@ local colors = {
     azul = Color3.fromRGB(102, 102, 255),
     amarelo = Color3.fromRGB(242, 255, 118),
     roxo = Color3.fromRGB(178, 102, 255),
-    cinza = Color3.fromRGB(100, 100, 100)
+    rosa = Color3.fromRGB(255, 105, 180),
+    laranja = Color3.fromRGB(255, 165, 0),
+    ciano = Color3.fromRGB(0, 255, 255),
+    marrom = Color3.fromRGB(139, 69, 19),
+    branco = Color3.fromRGB(255, 255, 255),
+    cinza = Color3.fromRGB(100, 100, 100),
+    cinzaEscuro = Color3.fromRGB(50, 50, 50),
+    preto = Color3.fromRGB(0, 0, 0),
+}
+
+local Themes = {
+    Dark = {
+        Background = colors.preto,
+        Primary = colors.cinzaEscuro,
+        Accent = colors.vermelho,
+        Text = colors.branco,
+    },
+    Light = {
+        Background = colors.branco,
+        Primary = colors.cinza,
+        Accent = colors.azul,
+        Text = colors.preto,
+    },
+    Ocean = {
+        Background = colors.azul,
+        Primary = colors.ciano,
+        Accent = colors.verde,
+        Text = colors.branco,
+    },
+    Sunset = {
+        Background = colors.laranja,
+        Primary = colors.vermelho,
+        Accent = colors.roxo,
+        Text = colors.preto,
+    },
+    Neon = {
+        Background = colors.preto,
+        Primary = colors.verde,
+        Accent = colors.rosa,
+        Text = colors.ciano,
+    },
 }
 
 function TPSLib:Window(config)
     local name = config.Name or "TPS Window"
-    local topbarTheme = colors[config.TopbarTheme] or Color3.fromRGB(102, 102, 255)
+    local topbarTheme = colors[config.TopbarTheme] or colors.azul
+    local theme = Themes[config.WindowTheme] or Themes.Dark
 
     local TARGET_W, TARGET_H = 520, 300
     local TOPBAR_H = 44
@@ -49,12 +94,17 @@ function TPSLib:Window(config)
         AnchorPoint = Vector2.new(0.5, 0.5),
         Size = UDim2.fromOffset(math.floor(TARGET_W*0.5), TOPBAR_H),
         Position = UDim2.new(0.5, 0, 1.1, 0),
-        BackgroundColor3 = Color3.fromRGB(36, 36, 38),
+        BackgroundColor3 = theme.Background,
         BorderSizePixel = 0,
         ClipsDescendants = true
     }, gui)
     new("UICorner", {CornerRadius = UDim.new(0, 14)}, window)
-    new("UIStroke", {ApplyStrokeMode = Enum.ApplyStrokeMode.Border, Color = Color3.fromRGB(60,60,66), Transparency = 0.25, Thickness = 1}, window)
+    new("UIStroke", {
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+        Color = theme.Accent,
+        Transparency = 0.25,
+        Thickness = 1
+    }, window)
 
     local topBar = new("Frame", {
         Name = "TopBar",
@@ -74,7 +124,7 @@ function TPSLib:Window(config)
         Font = Enum.Font.GothamSemibold,
         TextSize = 16,
         TextXAlignment = Enum.TextXAlignment.Left,
-        TextColor3 = Color3.fromRGB(250, 250, 250),
+        TextColor3 = theme.Text,
         ZIndex = 3
     }, topBar)
 
@@ -83,8 +133,8 @@ function TPSLib:Window(config)
         Text = "X",
         Size = UDim2.fromOffset(32, 30),
         Position = UDim2.new(1, -38, 0, 7),
-        BackgroundColor3 = Color3.fromRGB(255, 84, 84),
-        TextColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundColor3 = colors.vermelho,
+        TextColor3 = colors.branco,
         Font = Enum.Font.GothamBold,
         TextSize = 18,
         BorderSizePixel = 0,
@@ -97,8 +147,8 @@ function TPSLib:Window(config)
         Text = "−",
         Size = UDim2.fromOffset(32, 30),
         Position = UDim2.new(1, -76, 0, 7),
-        BackgroundColor3 = Color3.fromRGB(242, 255, 118),
-        TextColor3 = Color3.fromRGB(40, 40, 40),
+        BackgroundColor3 = colors.amarelo,
+        TextColor3 = colors.preto,
         Font = Enum.Font.GothamBold,
         TextSize = 18,
         BorderSizePixel = 0,
@@ -110,7 +160,7 @@ function TPSLib:Window(config)
         Name = "MainFrame",
         Size = UDim2.new(1, -20, 1, -(TOPBAR_H + 16)),
         Position = UDim2.fromOffset(10, TOPBAR_H + 6),
-        BackgroundColor3 = Color3.fromRGB(44, 44, 48),
+        BackgroundColor3 = theme.Primary,
         BorderSizePixel = 0,
         ZIndex = 1,
         CanvasSize = UDim2.new(0,0,0,0),
@@ -142,21 +192,23 @@ function TPSLib:Window(config)
         end
 
         topBar.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if input.UserInputType == Enum.UserInputType.MouseButton1
+            or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = true
                 dragStart = input.Position
                 startPos = window.Position
                 input.Changed:Connect(function()
                     if input.UserInputState == Enum.UserInputState.End then
                         dragging = false
-                        tween(window, {Position = window.Position}, TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out))
+                        tween(window, {Position = window.Position}, TweenInfo.new(0.12, Enum.EasingStyle.Quad))
                     end
                 end)
             end
         end)
 
         topBar.InputChanged:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            if input.UserInputType == Enum.UserInputType.MouseMovement
+            or input.UserInputType == Enum.UserInputType.Touch then
                 dragInput = input
             end
         end)
@@ -168,26 +220,22 @@ function TPSLib:Window(config)
         end)
     end
 
-    -- MINIMIZE
     local minimized = false
     minBtn.MouseButton1Click:Connect(function()
         minimized = not minimized
         if minimized then
             mainContent.Visible = false
-            tween(window, {Size = UDim2.fromOffset(TARGET_W, TOPBAR_H)}, TweenInfo.new(0.28, Enum.EasingStyle.Quad, Enum.EasingDirection.Out))
-            tween(topBar, {BackgroundColor3 = topbarTheme}, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out))
+            tween(window, {Size = UDim2.fromOffset(TARGET_W, TOPBAR_H)}, TweenInfo.new(0.28, Enum.EasingStyle.Quad))
             minBtn.Text = "+"
         else
-            tween(window, {Size = UDim2.fromOffset(TARGET_W, TARGET_H)}, TweenInfo.new(0.32, Enum.EasingStyle.Back, Enum.EasingDirection.Out))
-            tween(topBar, {BackgroundColor3 = topbarTheme}, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out))
+            tween(window, {Size = UDim2.fromOffset(TARGET_W, TARGET_H)}, TweenInfo.new(0.32, Enum.EasingStyle.Back))
             task.delay(0.08, function()
                 mainContent.Visible = true
-                minBtn.Text = "-"
+                minBtn.Text = "−"
             end)
         end
     end)
 
-    -- CLOSE
     closeBtn.MouseButton1Click:Connect(function()
         local t = tween(window, {
             Size = UDim2.fromOffset(math.floor(TARGET_W*0.5), TOPBAR_H),
@@ -197,13 +245,13 @@ function TPSLib:Window(config)
     end)
 
     local WindowObj = {}
-
+    
     function WindowObj:Button(text, colorName, callback)
         local btn = new("TextButton", {
             Size = UDim2.new(1, -20, 0, 40),
             Position = UDim2.fromOffset(10, (#mainContent:GetChildren()-1)*46),
-            BackgroundColor3 = colors[colorName] or Color3.fromRGB(200, 200, 200),
-            TextColor3 = Color3.fromRGB(0,0,0),
+            BackgroundColor3 = colors[colorName] or theme.Accent,
+            TextColor3 = theme.Text,
             Font = Enum.Font.GothamBold,
             TextSize = 16,
             Text = text,
@@ -224,6 +272,5 @@ function TPSLib:Window(config)
 
     return WindowObj
 end
-
 
 return TPSLib
